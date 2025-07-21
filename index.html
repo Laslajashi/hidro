@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Repotenciación Hidroeléctrica - Dashboard de Proyecto</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        /* Custom styles */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f2f5;
+        }
+        .header-gradient {
+            background: linear-gradient(90deg, #1e3a8a 0%, #3b82f6 100%);
+        }
+        .card {
+            background-color: #ffffff;
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -2px rgb(0 0 0 / 0.1);
+        }
+        .table-header {
+            background-color: #eef2ff;
+        }
+        .nav-link {
+            transition: all 0.2s ease-in-out;
+            border-bottom: 2px solid transparent;
+        }
+        .nav-link.active {
+            border-bottom-color: #ffffff;
+            color: #ffffff;
+            font-weight: 600;
+        }
+        .nav-link:not(.active):hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            border-bottom-color: rgba(255, 255, 255, 0.5);
+        }
+        .trm-badge {
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0%, 100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: .8;
+            }
+        }
+    </style>
+</head>
+<body class="text-gray-800">
+
+    <!-- Header Section -->
+    <header class="header-gradient text-white p-6 md:p-8 shadow-lg">
+      <div class="container mx-auto">
+        <h1 class="text-3xl md:text-4xl font-bold tracking-tight">Dashboard de Proyecto y Viabilidad</h1>
+          <p class="mt-2 text-lg md:text-xl text-blue-100">Análisis de la Repotenciación Hidroeléctrica y Montaje Granja de  Minería BTC</p>
+        </div>
+    </header>
+
+    <!-- Navigation -->
+    <nav class="bg-blue-700 sticky top-0 z-50 shadow-md">
+        <div class="container mx-auto flex items-center justify-between">
+            <div class="flex space-x-2 md:space-x-4">
+                <a href="repotenciacion.html" class="nav-link active px-3 py-3 text-sm md:text-base">Repotenciación Hidroeléctrica</a>
+                <a href="simulacion.html" class="nav-link text-blue-200 px-3 py-3 text-sm md:text-base">Presupuesto Granja de Minería BTC</a>
+                
+            <div id="trm-container" class="px-3 py-2 bg-green-500 text-white rounded-lg text-sm md:text-base font-semibold trm-badge">
+                TRM: <span id="trm-value">Cargando...</span>
+            </div>
+</div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="container mx-auto p-4 md:p-8">
+        
+        <!-- Section 1: Resumen Ejecutivo y Parámetros -->
+        <section id="resumen" class="card p-6 mb-8">
+            <h2 class="text-2xl font-bold text-blue-800 border-b-2 border-blue-200 pb-2 mb-4">1.0 Resumen Ejecutivo y Enfoque del Proyecto</h2>
+            
+            <div class="space-y-4">
+                <div>
+                    <h3 class="text-lg font-semibold text-gray-700">1.1 Alcance y Objetivos</h3>
+                    <p class="text-gray-600 mt-1">Este documento presenta un presupuesto detallado para la repotenciación y modernización de la central hidroeléctrica Las Lajas. El proyecto consiste en el reemplazo completo del equipamiento obsoleto para instalar una nueva capacidad de <strong>4.4 MW</strong>, junto con la rehabilitación de la infraestructura civil centenaria.</p>
+                </div>
+
+                <div>
+                    <h3 class="text-lg font-semibold text-gray-700">1.2 Parámetros Fundamentales</h3>
+                    <ul class="list-disc list-inside mt-1 space-y-2 text-gray-600">
+                        <li><strong>Ubicación:</strong> Cañón del río Guáitara, Santuario de Las Lajas, Ipiales, Nariño, Colombia.</li>
+                        <li><strong>Altitud:</strong> 2,900 msnm (factor crítico que exige sobredimensionamiento de equipos).</li>
+                        <li><strong>Potencia a Instalar:</strong> 4.4 MW (2 unidades Pelton de 2.2 MW cada una).</li>
+                        <li><strong>Tipo de Proyecto:</strong> Repotenciación (Brownfield) con aprovechamiento de infraestructura civil.</li>
+                        <li><strong>Tasa de Cambio (TRM) Base:</strong> 4,000 COP por 1 USD (para cálculos originales).</li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3 class="text-lg font-semibold text-gray-700 mt-6">1.3 Resumen del Costo Total de Inversión (CAPEX)</h3>
+                    <div class="overflow-x-auto mt-2">
+                        <table class="w-full text-left border-collapse">
+                            <thead>
+                                <tr class="table-header">
+                                    <th class="p-3 font-semibold text-gray-700 border-b">Fase del Proyecto</th>
+                                    <th class="p-3 font-semibold text-gray-700 border-b text-right">Costo (USD)</th>
+                                    <th class="p-3 font-semibold text-gray-700 border-b text-right">Costo (COP - TRM Real)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="hover:bg-gray-50">
+                                    <td class="p-3 border-b">Fase I: Permisos y Estudios</td>
+                                    <td class="p-3 border-b text-right" data-usd="1090000">$1,090,000</td>
+                                    <td class="p-3 border-b text-right cop-value">Calculando...</td>
+                                </tr>
+                                <tr class="hover:bg-gray-50">
+                                    <td class="p-3 border-b">Fase II: Ingeniería, Suministro y Construcción</td>
+                                    <td class="p-3 border-b text-right" data-usd="6700000">$6,700,000</td>
+                                    <td class="p-3 border-b text-right cop-value">Calculando...</td>
+                                </tr>
+                                <tr class="hover:bg-gray-50">
+                                    <td class="p-3 border-b">Fase III: Costos Indirectos y Gestión</td>
+                                    <td class="p-3 border-b text-right" data-usd="935925">$935,925</td>
+                                    <td class="p-3 border-b text-right cop-value">Calculando...</td>
+                                </tr>
+                                <tr class="hover:bg-gray-50">
+                                    <td class="p-3 border-b">Fase IV: Puesta en Marcha y Pruebas</td>
+                                    <td class="p-3 border-b text-right" data-usd="176000">$176,000</td>
+                                    <td class="p-3 border-b text-right cop-value">Calculando...</td>
+                                </tr>
+                                <tr class="bg-gray-100 font-semibold">
+                                    <td class="p-3 border-b">Subtotal Costo Directo e Indirecto</td>
+                                    <td class="p-3 border-b text-right" data-usd="8901925">$8,901,925</td>
+                                    <td class="p-3 border-b text-right cop-value">Calculando...</td>
+                                </tr>
+                                <tr class="hover:bg-gray-50">
+                                    <td class="p-3 border-b">Fondo de Contingencia (12.1%)</td>
+                                    <td class="p-3 border-b text-right" data-usd="1077232">$1,077,232</td>
+                                    <td class="p-3 border-b text-right cop-value">Calculando...</td>
+                                </tr>
+                                <tr class="bg-blue-100 font-bold text-blue-900">
+                                    <td class="p-3">Costo Total de Inversión (CAPEX)</td>
+                                    <td class="p-3 text-right" data-usd="9979157">$9,979,157</td>
+                                    <td class="p-3 text-right cop-value">Calculando...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                     <p class="text-sm text-gray-500 mt-4">El costo específico de inversión para la repotenciación se estima en <strong>$2,268 USD/kW</strong>.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 2: Fase I -->
+        <section id="fase1" class="card p-6 mb-8">
+            <h2 class="text-2xl font-bold text-blue-800 border-b-2 border-blue-200 pb-2 mb-4">2.0 Fase I: Permisos de Actualización y Estudios de Viabilidad</h2>
+            <p class="text-gray-600 mb-4">Esta fase se reorienta hacia la evaluación de la infraestructura existente y la gestión de los permisos necesarios para una modificación sustancial del proyecto.</p>
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                        <tr class="table-header">
+                            <th class="p-3 font-semibold text-gray-700 border-b">Ítem</th>
+                            <th class="p-3 font-semibold text-gray-700 border-b">Descripción</th>
+                            <th class="p-3 font-semibold text-gray-700 border-b text-right">Costo (USD)</th>
+                            <th class="p-3 font-semibold text-gray-700 border-b text-right">Costo (COP - TRM Real)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="hover:bg-gray-50">
+                            <td class="p-3 border-b">2.1.1</td>
+                            <td class="p-3 border-b">Modificación de Licencia Ambiental (Estudios y Tasas ANLA)</td>
+                            <td class="p-3 border-b text-right" data-usd="200000">$200,000</td>
+                            <td class="p-3 border-b text-right cop-value">Calculando...</td>
+                        </tr>
+                        <tr class="hover:bg-gray-50">
+                            <td class="p-3 border-b">2.1.2</td>
+                            <td class="p-3 border-b">Proceso de Consulta Previa (Logística y Acuerdos)</td>
+                            <td class="p-3 border-b text-right" data-usd="550000">$550,000</td>
+                            <td class="p-3 border-b text-right cop-value">Calculando...</td>
+                        </tr>
+                        <tr class="hover:bg-gray-50">
+                            <td class="p-3 border-b">2.2.1</td>
+                            <td class="p-3 border-b">Diagnóstico Estructural y Geotécnico de Obras Existentes</td>
+                            <td class="p-3 border-b text-right" data-usd="150000">$150,000</td>
+                            <td class="p-3 border-b text-right cop-value">Calculando...</td>
+                        </tr>
+                        <tr class="hover:bg-gray-50">
+                            <td class="p-3 border-b">2.2.2</td>
+                            <td class="p-3 border-b">Estudios Hidrológicos y Topográficos</td>
+                            <td class="p-3 border-b text-right" data-usd="100000">$100,000</td>
+                            <td class="p-3 border-b text-right cop-value">Calculando...</td>
+                        </tr>
+                        <tr class="hover:bg-gray-50">
+                            <td class="p-3 border-b">2.3</td>
+                            <td class="p-3 border-b">Otros Permisos y Costos Legales</td>
+                            <td class="p-3 border-b text-right" data-usd="90000">$90,000</td>
+                            <td class="p-3 border-b text-right cop-value">Calculando...</td>
+                        </tr>
+                        <tr class="bg-blue-100 font-bold text-blue-900">
+                            <td class="p-3" colspan="2">Total Fase I</td>
+                            <td class="p-3 text-right" data-usd="1090000">$1,090,000</td>
+                            <td class="p-3 text-right cop-value">Calculando...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Section 3: Fase II -->
+        <section id="fase2" class="card p-6 mb-8">
+            <h2 class="text-2xl font-bold text-blue-800 border-b-2 border-blue-200 pb-2 mb-4">3.0 Fase II: Ingeniería, Suministro, Desmantelamiento y Construcción</h2>
+            <p class="text-gray-600 mb-4">Esta fase se adapta para incluir las actividades de desmantelamiento y rehabilitación, resultando en una estructura de costos diferente a la de un proyecto nuevo.</p>
+            
+            <h3 class="text-xl font-semibold text-gray-700 mt-6 mb-2">3.1 Obras Civiles de Rehabilitación y Modernización</h3>
+            <div class="overflow-x-auto mb-6">
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                        <tr class="table-header">
+                            <th class="p-3 font-semibold text-gray-700 border-b">Ítem</th>
+                            <th class="p-3 font-semibold text-gray-700 border-b">Descripción</th>
+                            <th class="p-3 font-semibold text-gray-700 border-b text-right">Costo (USD)</th>
+                            <th class="p-3 font-semibold text-gray-700 border-b text-right">Costo (COP - TRM Real)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="hover:bg-gray-50">
+                            <td class="p-3 border-b">3.1.1</td>
+                            <td class="p-3 border-b">Desmantelamiento y Demolición de Equipos y Obras Internas</td>
+                            <td class="p-3 border-b text-right" data-usd="200000">$200,000</td>
+                            <td class="p-3 border-b text-right cop-value">Calculando...</td>
+                        </tr>
+                        <tr class="hover:bg-gray-50">
+                            <td class="p-3 border-b">3.1.2</td>
+                            <td class="p-3 border-b">Rehabilitación y Reforzamiento Estructural</td>
+                            <td class="p-3 border-b text-right" data-usd="600000">$600,000</td>
+                            <td class="p-3 border-b text-right cop-value">Calculando...</td>
+                        </tr>
+                        <tr class="hover:bg-gray-50">
+                            <td class="p-3 border-b">3.1.3</td>
+                            <td class="p-3 border-b">Reemplazo de Tubería de Presión (Penstock)</td>
+                            <td class="p-3 border-b text-right" data-usd="1500000">$1,500,000</td>
+                            <td class="p-3 border-b text-right cop-value">Calculando...</td>
+                        </tr>
+                        <tr class="hover:bg-gray-50">
+                            <td class="p-3 border-b">3.1.4</td>
+                            <td class="p-3 border-b">Mejora de Vías de Acceso y Campamentos</td>
+                            <td class="p-3 border-b text-right" data-usd="100000">$100,000</td>
+                            <td class="p-3 border-b text-right cop-value">Calculando...</td>
+                        </tr>
+                        <tr class="bg-gray-100 font-semibold">
+                            <td class="p-3" colspan="2">Total Obras Civiles</td>
+                            <td class="p-3 text-right" data-usd="2400000">$2,400,000</td>
+                            <td class="p-3 text-right cop-value">Calculando...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <h3 class="text-xl font-semibold text-gray-700 mt-6 mb-2">3.2 Suministro E&M e Interconexión</h3>
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                        <tr class="table-header">
+                            <th class="p-3 font-semibold text-gray-700 border-b">Componente</th>
+                            <th class="p-3 font-semibold text-gray-700 border-b">Especificación Clave (Considerando Altitud)</th>
+                            <th class="p-3 font-semibold text-gray-700 border-b text-right">Costo (USD)</th>
+                            <th class="p-3 font-semibold text-gray-700 border-b text-right">Costo (COP - TRM Real)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="hover:bg-gray-50">
+                            <td class="p-3 border-b">Paquete Turbina-Generador (x2)</td>
+                            <td class="p-3 border-b">2.2 MW (nominal), Generador ~3.1 MVA</td>
+                            <td class="p-3 border-b text-right" data-usd="2400000">$2,400,000</td>
+                            <td class="p-3 border-b text-right cop-value">Calculando...</td>
+                        </tr>
+                        <tr class="hover:bg-gray-50">
+                            <td class="p-3 border-b">Transformador Principal</td>
+                            <td class="p-3 border-b">~6.0 MVA (a nivel del mar), BIL superior</td>
+                            <td class="p-3 border-b text-right" data-usd="450000">$450,000</td>
+                            <td class="p-3 border-b text-right cop-value">Calculando...</td>
+                        </tr>
+                         <tr class="hover:bg-gray-50">
+                            <td class="p-3 border-b">Switchgear de MT</td>
+                            <td class="p-3 border-b">Clase de tensión superior (ej. 52 kV)</td>
+                            <td class="p-3 border-b text-right" data-usd="250000">$250,000</td>
+                            <td class="p-3 border-b text-right cop-value">Calculando...</td>
+                        </tr>
+                        <tr class="hover:bg-gray-50">
+                            <td class="p-3 border-b">Sistemas de Control y SCADA</td>
+                            <td class="p-3 border-b">Sistema integrado</td>
+                            <td class="p-3 border-b text-right" data-usd="350000">$350,000</td>
+                            <td class="p-3 border-b text-right cop-value">Calculando...</td>
+                        </tr>
+                        <tr class="hover:bg-gray-50">
+                            <td class="p-3 border-b">Equipos Auxiliares</td>
+                            <td class="p-3 border-b">Paquete completo</td>
+                            <td class="p-3 border-b text-right" data-usd="300000">$300,000</td>
+                            <td class="p-3 border-b text-right cop-value">Calculando...</td>
+                        </tr>
+                        <tr class="bg-gray-100 font-semibold">
+                            <td class="p-3 border-b" colspan="2">Subtotal E&M</td>
+                            <td class="p-3 border-b text-right" data-usd="3750000">$3,750,000</td>
+                            <td class="p-3 border-b text-right cop-value">Calculando...</td>
+                        </tr>
+                        <tr class="hover:bg-gray-50">
+                            <td class="p-3 border-b">Actualización Línea de Transmisión (10 km)</td>
+                            <td class="p-3 border-b">Repotenciación a 34.5 kV</td>
+                            <td class="p-3 border-b text-right" data-usd="250000">$250,000</td>
+                            <td class="p-3 border-b text-right cop-value">Calculando...</td>
+                        </tr>
+                         <tr class="hover:bg-gray-50">
+                            <td class="p-3 border-b">Actualización Bahía de Subestación</td>
+                            <td class="p-3 border-b">Modernización de equipos</td>
+                            <td class="p-3 border-b text-right" data-usd="300000">$300,000</td>
+                            <td class="p-3 border-b text-right cop-value">Calculando...</td>
+                        </tr>
+                        <tr class="bg-blue-100 font-bold text-blue-900">
+                            <td class="p-3" colspan="2">Total E&M e Interconexión</td>
+                            <td class="p-3 text-right" data-usd="4300000">$4,300,000</td>
+                             <td class="p-3 text-right cop-value">Calculando...</td>
+                        </tr>
+                         <tr class="bg-yellow-100 font-bold text-yellow-900">
+                            <td class="p-3" colspan="2">Total Fase II (Obras Civiles + E&M)</td>
+                            <td class="p-3 text-right" data-usd="6700000">$6,700,000</td>
+                             <td class="p-3 text-right cop-value">Calculando...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Section 4: Fases III y IV -->
+        <section id="fase3-4" class="card p-6 mb-8">
+            <h2 class="text-2xl font-bold text-blue-800 border-b-2 border-blue-200 pb-2 mb-4">4.0 Fases III y IV: Costos Indirectos, Puesta en Marcha y Contingencia</h2>
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                        <tr class="table-header">
+                            <th class="p-3 font-semibold text-gray-700 border-b">Ítem</th>
+                            <th class="p-3 font-semibold text-gray-700 border-b">Descripción</th>
+                            <th class="p-3 font-semibold text-gray-700 border-b text-right">Costo (USD)</th>
+                            <th class="p-3 font-semibold text-gray-700 border-b text-right">Costo (COP - TRM Real)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="bg-gray-100 font-semibold">
+                            <td class="p-3 border-b">Fase III</td>
+                            <td class="p-3 border-b">Costos Indirectos y Gestión</td>
+                            <td class="p-3 border-b text-right" data-usd="935925">$935,925</td>
+                            <td class="p-3 border-b text-right cop-value">Calculando...</td>
+                        </tr>
+                        <tr class="hover:bg-gray-50">
+                            <td class="p-3 border-b pl-8">4.1</td>
+                            <td class="p-3 border-b">Ingeniería y Supervisión (12% del EPC)</td>
+                            <td class="p-3 border-b text-right" data-usd="804000">$804,000</td>
+                            <td class="p-3 border-b text-right cop-value">Calculando...</td>
+                        </tr>
+                        <tr class="hover:bg-gray-50">
+                            <td class="p-3 border-b pl-8">4.2</td>
+                            <td class="p-3 border-b">Administración y Seguros</td>
+                            <td class="p-3 border-b text-right" data-usd="131925">$131,925</td>
+                            <td class="p-3 border-b text-right cop-value">Calculando...</td>
+                        </tr>
+                        <tr class="bg-gray-100 font-semibold">
+                            <td class="p-3 border-b">Fase IV</td>
+                            <td class="p-3 border-b">Puesta en Marcha y Pruebas</td>
+                            <td class="p-3 border-b text-right" data-usd="176000">$176,000</td>
+                            <td class="p-3 border-b text-right cop-value">Calculando...</td>
+                        </tr>
+                        <tr class="bg-gray-100 font-semibold">
+                            <td class="p-3 border-b">4.3</td>
+                            <td class="p-3 border-b">Fondo de Contingencia (Ponderado)</td>
+                            <td class="p-3 border-b text-right" data-usd="1077232">$1,077,232</td>
+                            <td class="p-3 border-b text-right cop-value">Calculando...</td>
+                        </tr>
+                         <tr class="hover:bg-gray-50">
+                            <td class="p-3 border-b pl-8"></td>
+                            <td class="p-3 border-b">Contingencia Alto Riesgo (18%)</td>
+                            <td class="p-3 border-b text-right" data-usd="628200">$628,200</td>
+                            <td class="p-3 border-b text-right cop-value">Calculando...</td>
+                        </tr>
+                         <tr class="hover:bg-gray-50">
+                            <td class="p-3 border-b pl-8"></td>
+                            <td class="p-3 border-b">Contingencia Riesgo Estándar (8%)</td>
+                            <td class="p-3 border-b text-right" data-usd="449032">$449,032</td>
+                            <td class="p-3 border-b text-right cop-value">Calculando...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Section 5: Conclusión -->
+        <section id="conclusion" class="card p-6">
+            <h2 class="text-2xl font-bold text-blue-800 border-b-2 border-blue-200 pb-2 mb-4">5.0 Conclusión del Presupuesto</h2>
+            <p class="text-gray-600 mb-4">El cambio de enfoque hacia un proyecto de repotenciación resulta en un <strong>CAPEX total estimado de $9,979,157 USD</strong>. Este presupuesto es aproximadamente un 10.6% menor que el de un proyecto nuevo, derivado de la reutilización de infraestructura. Sin embargo, los ahorros son contrarrestados por los costos de desmantelamiento y rehabilitación estructural.</p>
+            <div class="bg-blue-50 border-l-4 border-blue-500 text-blue-800 p-4" role="alert">
+                <p class="font-bold">Recomendación Clave</p>
+                <p>La siguiente fase del proyecto debe centrarse en los estudios de diagnóstico estructural para reducir la incertidumbre en los costos de rehabilitación civil.</p>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="bg-gray-800 text-white mt-12 py-6">
+        <div class="container mx-auto text-center text-gray-400">
+            <p>&copy; 2025 Dashboard de Proyecto y Viabilidad. Todos los derechos reservados.</p>
+            <p class="text-sm mt-1">&nbsp;</p>
+      </div>
+    </footer>
+
+<script>
+        // --- TRM Fetching and Value Calculation ---
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Function to fetch the latest exchange rate for USD to COP
+            async function fetchTRM() {
+                const trmValueElement = document.getElementById('trm-value');
+                try {
+                    // Using a reliable, no-key-required API for exchange rates
+                    const response = await fetch('https://open.er-api.com/v6/latest/USD');
+                    if (!response.ok) {
+                        throw new Error(`Error en la red: ${response.statusText}`);
+                    }
+                    const data = await response.json();
+                    const trm = data.rates.COP;
+
+                    if (trm) {
+                        // Format and display the TRM
+                        const formattedTRM = trm.toLocaleString('es-CO', { style: 'currency', currency: 'COP', minimumFractionDigits: 2 });
+                        trmValueElement.textContent = formattedTRM;
+                        
+                        // Update all COP values in the tables
+                        updateCopValues(trm);
+                    } else {
+                        trmValueElement.textContent = 'Error';
+                    }
+                } catch (error) {
+                    console.error('Error al obtener la TRM:', error);
+                    trmValueElement.textContent = 'No disponible';
+                    // As a fallback, maybe use the base rate
+                    updateCopValues(4000); 
+                }
+            }
+
+            // Function to update all elements with the class 'cop-value'
+            function updateCopValues(trm) {
+                const copValueElements = document.querySelectorAll('.cop-value');
+                
+                copValueElements.forEach(cell => {
+                    // Find the sibling cell that has the USD value with a data-usd attribute
+                    const usdCell = cell.previousElementSibling;
+                    if (usdCell && usdCell.dataset.usd) {
+                        const usdValue = parseFloat(usdCell.dataset.usd);
+                        const copValue = usdValue * trm;
+                        
+                        // Format the COP value as Colombian currency
+                        cell.textContent = copValue.toLocaleString('es-CO', { style: 'currency', currency: 'COP', maximumFractionDigits: 0 });
+                    }
+                });
+            }
+
+            // Initial call to fetch the data when the page loads
+            fetchTRM();
+        });
+    </script>
+
+</body>
+</html>

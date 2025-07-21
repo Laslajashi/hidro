@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Presupuesto Granja Minera - Dashboard de Viabilidad</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* Estilos compartidos */
+        body { font-family: 'Inter', sans-serif; background-color: #f0f2f5; }
+        .header-gradient { background: linear-gradient(90deg, #1e3a8a 0%, #3b82f6 100%); }
+        .card { background-color: #ffffff; border-radius: 0.75rem; box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1); }
+        .table-header { background-color: #eef2ff; }
+        .nav-link { transition: all 0.2s ease-in-out; border-bottom: 2px solid transparent; }
+        .nav-link.active { border-bottom-color: #ffffff; color: #ffffff; font-weight: 600; }
+        .nav-link:not(.active):hover { background-color: rgba(255, 255, 255, 0.1); border-bottom-color: rgba(255, 255, 255, 0.5); }
+        .realtime-badge { animation: pulse 2s infinite; margin: 2px; }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: .8; } }
+        input[type=range] { -webkit-appearance: none; appearance: none; width: 100%; height: 8px; background: #d1d5db; border-radius: 5px; outline: none; }
+        input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 24px; height: 24px; background: #3b82f6; cursor: pointer; border-radius: 50%; border: 2px solid white; }
+        input[type=range]::-moz-range-thumb { width: 24px; height: 24px; background: #3b82f6; cursor: pointer; border-radius: 50%; border: 2px solid white; }
+        .prose { max-width: none; }
+        .prose h2 { font-size: 1.5rem; font-weight: 700; color: #1e3a8a; border-bottom: 2px solid #dbeafe; padding-bottom: 0.5rem; margin-bottom: 1rem; margin-top: 2rem; }
+        .prose h3 { font-size: 1.25rem; font-weight: 600; color: #1d4ed8; margin-top: 1.5rem; margin-bottom: 1rem; }
+        .prose h4 { font-size: 1.1rem; font-weight: 600; color: #1e40af; margin-top: 1.25rem; margin-bottom: 1rem; }
+        .prose p, .prose ul { color: #374151; line-height: 1.6; }
+        .prose ul { list-style: disc; list-style-position: inside; padding-left: 1rem; }
+        .prose strong { color: #111827; }
+    </style>
+</head>
+<body class="text-gray-800">
+
+    <!-- Header Section -->
+    <header class="header-gradient text-white p-6 md:p-8 shadow-lg">
+      <div class="container mx-auto">
+        <h1 class="text-3xl md:text-4xl font-bold tracking-tight">Dashboard de Proyecto y Viabilidad</h1>
+          <p class="mt-2 text-lg md:text-xl text-blue-100">Análisis de la Repotenciación Hidroeléctrica y  Montaje Granja de Minería BTC</p>
+        </div>
+    </header>
+
+    <!-- Navigation -->
+    <nav class="bg-blue-700 sticky top-0 z-50 shadow-md">
+        <div class="container mx-auto flex flex-wrap items-center justify-between p-2">
+            <div id="main-nav" class="flex space-x-1 md:space-x-4">
+                <a href="repotenciacion_hidroelectrica.html" class="nav-link text-blue-200 px-3 py-3 text-sm md:text-base">Repotenciación Hidroeléctrica</a>
+                <a href="#" class="nav-link active px-3 py-3 text-sm md:text-base">Presupuesto Granja Mineria BTC</a>
+                
+            </div>
+            <div class="flex items-center space-x-2 flex-wrap justify-end mt-2 md:mt-0">
+                 <div id="btc-container" class="realtime-badge px-2 py-1 bg-yellow-500 text-white rounded-lg text-xs md:text-sm font-semibold">
+                    BTC: <span id="btc-price">Cargando...</span>
+                </div>
+                <div id="trm-container" class="realtime-badge px-2 py-1 bg-green-500 text-white rounded-lg text-xs md:text-sm font-semibold">
+                    TRM: <span id="trm-value">Cargando...</span>
+                </div>
+                <div id="difficulty-container" class="realtime-badge px-2 py-1 bg-purple-600 text-white rounded-lg text-xs md:text-sm font-semibold">
+                    Dificultad: <span id="btc-difficulty">Cargando...</span>
+                </div>
+                <div id="reward-container" class="realtime-badge px-2 py-1 bg-cyan-500 text-white rounded-lg text-xs md:text-sm font-semibold">
+                    Recompensa: <span id="btc-reward">Cargando...</span>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ================================================================= -->
+    <!-- PAGE 2 CONTENT                                                    -->
+    <!-- ================================================================= -->
+    <main class="container mx-auto p-4 md:p-8">
+        <article class="card p-6 md:p-8 prose">
+            
+            <h2>INFORME DE VIABILIDAD: MINERÍA DE BITCOIN EN COLOMBIA (JULIO 2025)</h2>
+
+            <h3>Supuestos Iniciales y Metodología</h3>
+            <p>Este informe presenta un análisis cuantitativo riguroso sobre la viabilidad de la minería de Bitcoin (BTC) en Colombia bajo dos escenarios operativos distintos, proyectados a las condiciones de mercado de julio de 2025. El objetivo es proporcionar una guía de decisión clara y basada en datos para potenciales inversores en la región. Todos los cálculos y proyecciones se fundamentan en un conjunto de parámetros fijos y consistentes, detallados a continuación.</p>
+            <ul>
+                <li><strong>Precio de Bitcoin (BTC):</strong> Se utiliza un precio de mercado de $118,000 USD por BTC para todos los cálculos de ingresos. Este valor representa un escenario de mercado alcista pero plausible para mediados de 2025, considerando las tendencias de adopción institucional y los ciclos post-halving.</li>
+                <li><strong>Dificultad de la Red:</strong> Se asume una dificultad de red de ~126 T (Terahashes). Este parámetro refleja la competencia computacional global para validar un bloque y es un factor fundamental en el cálculo de la producción de BTC.</li>
+                <li><strong>Recompensa por Bloque:</strong> Se utiliza la recompensa por bloque post-halving de 2024, fijada en 3.125 BTC. Esta recompensa, junto con las comisiones de transacción, constituye el ingreso bruto por cada bloque minado exitosamente.</li>
+                <li><strong>Costos Eléctricos (Colombia):</strong> Para este escenario industrial, se asume una tarifa por defecto de <strong>$0.00 USD por kilovatio-hora (kWh)</strong>, pero este valor es editable en el simulador para analizar diferentes escenarios de costos energéticos.</li>
+            </ul>
+            <hr class="my-8">
+
+            <h2>Parte 1: Análisis de Minería a Escala Industrial</h2>
+            
+            <h3>1.1. Perfil de la Operación</h3>
+            <p><strong>Descripción:</strong> Se modela una granja de minería de Bitcoin profesional diseñada para consumir un excedente de energía de 1.8 Megavatios (MW) de una planta hidroeléctrica de propiedad privada. Al utilizar energía que de otro modo no se monetizaría, el costo operativo eléctrico se considera $0.00/kWh para fines de este análisis de viabilidad, transformando radicalmente el modelo económico del proyecto.</p>
+            <p><strong>Infraestructura Requerida:</strong> Una operación de esta magnitud requiere una infraestructura industrial compleja y diseñada a medida. Los componentes críticos incluyen sistemas de refrigeración hidráulica, infraestructura eléctrica robusta (transformador, PDUs), y una infraestructura física segura (contenedor de minería).</p>
+            
+            <h3>1.2. Análisis Técnico del Hardware</h3>
+            <p>La selección del hardware es la decisión más importante. Se ha seleccionado el <strong>Bitmain Antminer S21e XP Hydro</strong> por su eficiencia energética superior (12.0 J/TH). Con un consumo de 5,676 W por minero, la granja puede operar un total de 317 unidades.</p>
+
+            <!-- Interactive Controls -->
+            <section class="not-prose bg-indigo-50 p-6 my-8 rounded-lg shadow-inner">
+                <h4 class="text-xl font-bold text-indigo-800 pb-2 mb-4">Simulador Interactivo de Escenarios</h4>
+                <div class="grid md:grid-cols-3 gap-6 items-start">
+                    <div class="md:col-span-1">
+                        <label for="miner-slider" class="block text-lg font-semibold text-gray-700">Número de Mineros: <span id="miner-count" class="font-bold text-blue-600">317</span></label>
+                        <p class="text-sm text-gray-500 mb-2">Ajuste la cantidad de mineros.</p>
+                        <input type="range" id="miner-slider" min="1" max="317" value="317" class="w-full">
+                    </div>
+                     <div class="md:col-span-1">
+                        <label for="kwh-cost-input" class="block text-lg font-semibold text-gray-700">Costo Energía kWh (USD)</label>
+                        <p class="text-sm text-gray-500 mb-2">Ajuste el costo por kWh.</p>
+                        <input type="number" id="kwh-cost-input" value="0.00" step="0.01" class="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
+                    </div>
+                    <div class="grid grid-cols-2 gap-4 text-center md:col-span-1">
+                        <div class="bg-white p-3 rounded-lg shadow">
+                            <p class="text-sm text-gray-500">Hashrate Total</p>
+                            <p id="total-hashrate" class="text-xl font-bold text-gray-800">Calculando...</p>
+                        </div>
+                        <div class="bg-white p-3 rounded-lg shadow">
+                            <p class="text-sm text-gray-500">Consumo Eléctrico</p>
+                            <p id="total-power" class="text-xl font-bold text-gray-800">Calculando...</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <h3>1.3. Análisis Financiero Detallado</h3>
+            <p>El análisis financiero debe considerar no solo los costos directos del hardware, sino también los costos indirectos significativos asociados con la importación y la construcción de la infraestructura en Colombia.</p>
+
+            <h4>Tabla 1.2: Desglose Detallado del CAPEX para Operación Industrial</h4>
+            <p>El CAPEX representa la totalidad de la inversión inicial requerida. La siguiente tabla se actualiza según el número de mineros seleccionados.</p>
+            <div class="overflow-x-auto my-4 not-prose">
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                        <tr class="table-header">
+                            <th class="p-3 font-semibold text-gray-700 border-b">Componente</th>
+                            <th class="p-3 font-semibold text-gray-700 border-b">Cálculo Base</th>
+                            <th class="p-3 font-semibold text-gray-700 border-b text-right">Costo (USD)</th>
+                        </tr>
+                    </thead>
+                    <tbody id="capex-table-body">
+                        <!-- JS will generate rows here -->
+                    </tbody>
+                </table>
+            </div>
+
+            <h4>Costos Operativos Mensuales (OPEX)</h4>
+            <p>El OPEX incluye todos los gastos recurrentes. El costo eléctrico, el más significativo, es ahora una variable que puede ajustar en el simulador.</p>
+            <ul>
+                <li><strong>Electricidad:</strong> Costo variable según el valor ingresado en el simulador (por defecto $0).</li>
+                <li><strong>Fees de Pool de Minería:</strong> Se asume una tarifa estándar del 2.5% sobre los ingresos brutos.</li>
+                <li><strong>Personal:</strong> Un equipo de 4 personas con un costo estimado de $12,000 mensuales (costo fijo).</li>
+                <li><strong>Mantenimiento y Repuestos:</strong> 1.5% anual del costo del hardware ASIC, distribuido mensualmente.</li>
+                <li><strong>Conectividad y Otros:</strong> $1,000 mensuales (costo fijo).</li>
+            </ul>
+
+            <h3>1.4. Rendimiento y Rentabilidad</h3>
+            <p>La rentabilidad de la operación depende críticamente del costo eléctrico. La siguiente tabla muestra las proyecciones basadas en los datos de mercado y los parámetros del simulador.</p>
+            
+            <h4>Tabla 1.3: Proyecciones de Rentabilidad - Escala Industrial</h4>
+            <div class="overflow-x-auto my-4 not-prose">
+                 <table class="w-full text-left border-collapse">
+                    <thead>
+                        <tr class="bg-green-50">
+                            <th class="p-3 font-semibold text-gray-700 border-b">Métrica Financiera</th>
+                            <th class="p-3 font-semibold text-gray-700 border-b text-right">Valor</th>
+                            <th class="p-3 font-semibold text-gray-700 border-b text-right">Proyección Anual</th>
+                        </tr>
+                    </thead>
+                    <tbody id="profit-table-body">
+                        <!-- JS will generate rows here -->
+                    </tbody>
+                </table>
+            </div>
+            <div class="mt-6 grid md:grid-cols-2 gap-4">
+                <div class="text-center bg-gray-50 p-4 rounded-lg">
+                    <p class="text-gray-600 font-semibold">Retorno de la Inversión (ROI) Estimado</p>
+                    <p id="roi-value" class="text-3xl font-bold text-gray-800 mt-1">Calculando...</p>
+                </div>
+                <div class="text-center bg-red-50 p-4 rounded-lg">
+                    <p class="text-gray-600 font-semibold">Precio de Equilibrio BTC (Break-Even)</p>
+                    <p id="breakeven-price" class="text-3xl font-bold text-red-800 mt-1">Calculando...</p>
+                </div>
+            </div>
+            
+            <hr class="my-8">
+
+            <h2>Parte 2: Análisis Comparativo - Venta de Energía vs. Minería</h2>
+            <p>Esta sección evalúa el escenario alternativo: en lugar de usar la energía para minar Bitcoin, ¿qué ingresos se generarían si esa misma cantidad de energía se vendiera a la red eléctrica nacional o a un tercero? Esto proporciona un costo de oportunidad directo para la operación de minería.</p>
+
+            <section class="not-prose bg-teal-50 p-6 my-8 rounded-lg shadow-inner">
+                <h4 class="text-xl font-bold text-teal-800 pb-2 mb-4">Simulador de Venta de Energía</h4>
+                <div class="grid md:grid-cols-2 gap-6 items-center">
+                    <div>
+                        <label for="kwh-price-input" class="block text-lg font-semibold text-gray-700">Precio de Venta por kWh (COP)</label>
+                        <p class="text-sm text-gray-500 mb-2">Ajuste el precio al que podría vender el excedente de energía.</p>
+                        <input type="number" id="kwh-price-input" value="400" class="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500">
+                    </div>
+                    <div class="grid grid-cols-1 gap-4 text-center">
+                        <div class="bg-white p-3 rounded-lg shadow">
+                            <p class="text-sm text-gray-500">Energía Disponible para Venta</p>
+                            <p id="energy-sale-power" class="text-xl font-bold text-gray-800">Calculando...</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <h4>Tabla 2.1: Proyección de Ingresos por Venta de Energía</h4>
+            <div class="overflow-x-auto my-4 not-prose">
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                        <tr class="bg-teal-100">
+                            <th class="p-3 font-semibold text-gray-700 border-b">Métrica</th>
+                            <th class="p-3 font-semibold text-gray-700 border-b text-right">Ingreso Diario</th>
+                            <th class="p-3 font-semibold text-gray-700 border-b text-right">Ingreso Mensual</th>
+                        </tr>
+                    </thead>
+                    <tbody id="energy-sale-table-body">
+                        <!-- JS will generate rows here -->
+                    </tbody>
+                </table>
+            </div>
+
+            <h3>1.5. Análisis de Riesgos (Contexto Colombia)</h3>
+            <p>La eliminación del costo eléctrico mitiga el mayor riesgo operativo, pero otros factores persisten.</p>
+            <ul>
+                <li><strong>Volatilidad del Precio de BTC:</strong> Sigue siendo el principal riesgo de mercado.</li>
+                <li><strong>Obsolescencia del Hardware:</strong> El rápido avance tecnológico sigue siendo un factor, pero un ROI rápido reduce este riesgo.</li>
+                <li><strong>Riesgo Regulatorio y Fiscal:</strong> Es el más significativo en Colombia. La minería opera en una zona regulatoria gris y un inversor se enfrenta a la posibilidad de nuevas regulaciones después de haber realizado la inversión.</li>
+            </ul>
+        </article>
+    </main>
+
+    <footer class="bg-gray-800 text-white mt-12 py-6">
+        <div class="container mx-auto text-center text-gray-400">
+            <p>&copy; 2025 Dashboard de Proyecto y Viabilidad. Todos los derechos reservados.</p>
+            <p class="text-sm mt-1">&nbsp;</p>
+        </div>
+    </footer>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // --- GLOBAL STATE AND CONSTANTS ---
+        let trmRate = 4000; // Fallback
+        let btcPriceUSD = 118000; // Fallback
+        let currentDifficulty = 126e12; // Fallback
+        let currentBlockReward = 3.125; // Fallback
+
+        const btcState = {
+            cost_per_miner: 12820,
+            full_infra_cost: 270000 + 135000 + 160000,
+            full_labor_cost: 72000,
+            opex_fixed_monthly: { 'Personal': 12000, 'Conectividad y Otros': 1000 },
+            pool_fee_rate: 0.025,
+            contingency_rate: 0.10,
+            import_tax_rate: 0.35,
+            shipping_rate: 0.05,
+            maintenance_rate_annual: 0.015,
+            miner_spec: { hashrate_ths: 473, power_watts: 5676 },
+            max_miners: 317
+        };
+
+        // --- DOM ELEMENTS ---
+        const trmValueElement = document.getElementById('trm-value');
+        const btcPriceElement = document.getElementById('btc-price');
+        const btcDifficultyElement = document.getElementById('btc-difficulty');
+        const btcRewardElement = document.getElementById('btc-reward');
+        const minerSlider = document.getElementById('miner-slider');
+        const minerCountSpan = document.getElementById('miner-count');
+        const totalHashrateSpan = document.getElementById('total-hashrate');
+        const totalPowerSpan = document.getElementById('total-power');
+        const capexTableBody = document.getElementById('capex-table-body');
+        const profitTableBody = document.getElementById('profit-table-body');
+        const roiValueSpan = document.getElementById('roi-value');
+        const breakevenPriceSpan = document.getElementById('breakeven-price');
+        const kwhCostInput = document.getElementById('kwh-cost-input');
+        const kwhPriceInput = document.getElementById('kwh-price-input');
+        const energySalePowerSpan = document.getElementById('energy-sale-power');
+        const energySaleTableBody = document.getElementById('energy-sale-table-body');
+
+        // --- API FETCHING ---
+        async function fetchAPIs() {
+            try {
+                const trmPromise = fetch('https://open.er-api.com/v6/latest/USD').then(res => res.json());
+                const btcPromise = fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd').then(res => res.json());
+                const difficultyPromise = fetch('https://blockchain.info/q/getdifficulty').then(res => res.text());
+                const blockCountPromise = fetch('https://blockchain.info/q/getblockcount').then(res => res.text());
+
+                const [trmData, btcData, difficultyText, blockCountText] = await Promise.all([trmPromise, btcPromise, difficultyPromise, blockCountPromise]);
+
+                if (trmData && trmData.rates && trmData.rates.COP) trmRate = trmData.rates.COP;
+                if (btcData && btcData.bitcoin && btcData.bitcoin.usd) btcPriceUSD = btcData.bitcoin.usd;
+                const parsedDifficulty = parseFloat(difficultyText);
+                if (!isNaN(parsedDifficulty)) currentDifficulty = parsedDifficulty;
+                const parsedBlockCount = parseInt(blockCountText);
+                if (!isNaN(parsedBlockCount)) {
+                    const halvings = Math.floor(parsedBlockCount / 210000);
+                    currentBlockReward = 50 / (2 ** halvings);
+                }
+            } catch (error) {
+                console.error('Error al obtener datos de las APIs. Usando valores de respaldo.', error);
+            } finally {
+                trmValueElement.textContent = formatCurrency(trmRate, 'COP');
+                btcPriceElement.textContent = formatCurrency(btcPriceUSD, 'USD');
+                btcDifficultyElement.textContent = `${(currentDifficulty / 1e12).toFixed(2)} T`;
+                btcRewardElement.textContent = `${currentBlockReward.toFixed(4)} BTC`;
+                updateBudget();
+            }
+        }
+
+        // --- CALCULATIONS & DOM UPDATES ---
+        function formatCurrency(num, currency = 'USD', showSub = false) {
+            if (isNaN(num) || num === null) return '$NaN';
+            const options = { style: 'currency', currency: currency, maximumFractionDigits: 0 };
+            const mainFormatted = num.toLocaleString(currency === 'USD' ? 'en-US' : 'es-CO', options);
+            
+            if (showSub && currency === 'USD' && trmRate > 0) {
+                const subFormatted = (num * trmRate).toLocaleString('es-CO', { style: 'currency', currency: 'COP', maximumFractionDigits: 0 });
+                return `<div>${mainFormatted}</div><div class="text-xs font-normal text-gray-500">${subFormatted}</div>`;
+            }
+            return mainFormatted;
+        }
+
+        function formatNumber(num, decimals = 0) {
+            if (isNaN(num) || num === null) return 'NaN';
+            return num.toLocaleString('en-US', { maximumFractionDigits: decimals });
+        }
+        
+        function updateBudget() {
+            if (!minerSlider) return;
+            
+            const numMiners = parseInt(minerSlider.value);
+            const scaleFactor = numMiners / btcState.max_miners;
+            minerCountSpan.textContent = numMiners;
+
+            const totalHashrateTHS = numMiners * btcState.miner_spec.hashrate_ths;
+            const totalPower = numMiners * btcState.miner_spec.power_watts;
+            totalHashrateSpan.textContent = `${formatNumber(totalHashrateTHS / 1000, 2)} PH/s`;
+            totalPowerSpan.textContent = `${formatNumber(totalPower / 1000, 2)} kW`;
+
+            const hardwareCost = numMiners * btcState.cost_per_miner;
+            const shippingCost = hardwareCost * btcState.shipping_rate;
+            const cifValue = hardwareCost + shippingCost;
+            const importTaxes = cifValue * btcState.import_tax_rate;
+            const infraCost = btcState.full_infra_cost * scaleFactor;
+            const laborCost = btcState.full_labor_cost * scaleFactor;
+            const subtotal = hardwareCost + shippingCost + importTaxes + infraCost + laborCost;
+            const contingency = subtotal * btcState.contingency_rate;
+            const totalCapex = subtotal + contingency;
+
+            const capexData = {
+                'Hardware ASIC': { calc: `${numMiners} unidades x ${formatCurrency(btcState.cost_per_miner)}`, cost: hardwareCost },
+                'Envío e Seguro': { calc: `5% del costo del hardware`, cost: shippingCost },
+                'Subtotal Valor CIF': { calc: 'Suma de hardware y envío', cost: cifValue },
+                'Impuestos de Importación': { calc: `35% del valor CIF`, cost: importTaxes },
+                'Infraestructura (Prorrateada)': { calc: `Refrigeración, Eléctrica, etc.`, cost: infraCost },
+                'Instalación (Prorrateada)': { calc: `Técnicos e ingenieros`, cost: laborCost },
+                'Subtotal Inversión': { calc: 'Suma de todos los costos', cost: subtotal },
+                'Fondo de Contingencia': { calc: `10% del subtotal`, cost: contingency },
+                'CAPEX TOTAL ESTIMADO': { calc: 'Inversión Total', cost: totalCapex }
+            };
+
+            let capexHtml = '';
+            for (const [key, value] of Object.entries(capexData)) {
+                const isTotal = key.includes('TOTAL');
+                const isSubtotal = key.includes('Subtotal');
+                let rowClass = 'hover:bg-gray-50';
+                if (isTotal) rowClass = 'bg-blue-100 font-bold text-blue-900';
+                if (isSubtotal) rowClass = 'bg-gray-100 font-semibold';
+                capexHtml += `<tr class="${rowClass}"><td class="p-2 border-b">${key}</td><td class="p-2 border-b text-sm text-gray-500">${value.calc}</td><td class="p-2 border-b text-right">${formatCurrency(value.cost, 'USD', true)}</td></tr>`;
+            }
+            capexTableBody.innerHTML = capexHtml;
+
+            // --- REVENUE CALCULATION (Using Difficulty Formula) ---
+            const totalHashrateHS = totalHashrateTHS * 1e12; // Convert TH/s to H/s
+            const secondsInDay = 86400;
+            const dailyGrossBtc = (currentDifficulty > 0) ? (totalHashrateHS * currentBlockReward * secondsInDay) / (currentDifficulty * (2 ** 32)) : 0;
+            const dailyGrossUsd = dailyGrossBtc * btcPriceUSD;
+            const monthlyGrossUsd = dailyGrossUsd * 30.4;
+            
+            // --- OPEX CALCULATION ---
+            const kwhCostUSD = parseFloat(kwhCostInput.value) || 0;
+            const totalPowerKW = totalPower / 1000;
+            const monthlyKwhConsumed = totalPowerKW * 24 * 30.4;
+            const electricityCostMonthly = monthlyKwhConsumed * kwhCostUSD;
+
+            const poolFeeMonthly = monthlyGrossUsd * btcState.pool_fee_rate;
+            const maintenanceMonthly = (hardwareCost * btcState.maintenance_rate_annual) / 12;
+            const totalOpexMonthly = electricityCostMonthly + poolFeeMonthly + maintenanceMonthly + btcState.opex_fixed_monthly['Personal'] + btcState.opex_fixed_monthly['Conectividad y Otros'];
+            const netProfitMonthly = monthlyGrossUsd - totalOpexMonthly;
+            const profitMargin = (monthlyGrossUsd > 0) ? (netProfitMonthly / monthlyGrossUsd) * 100 : 0;
+            
+            const profitData = {
+                'Ingreso Bruto Mensual': monthlyGrossUsd,
+                'Ingreso Bruto Diario': dailyGrossUsd,
+                'OPEX Total Mensual': totalOpexMonthly,
+                'Beneficio Neto Mensual': netProfitMonthly,
+                'Margen de Utilidad (%)': profitMargin,
+            };
+            
+            let profitHtml = '';
+            for(const [key, value] of Object.entries(profitData)) {
+                const isNetBenefit = key.includes('Beneficio');
+                const isMargin = key.includes('Margen');
+                const isDaily = key.includes('Diario');
+                let rowClass = 'hover:bg-green-50';
+                if (isNetBenefit) rowClass = 'bg-green-100 font-bold text-green-900';
+                if (isMargin) rowClass = 'bg-yellow-100 font-semibold text-yellow-900';
+                if (isDaily) rowClass = 'bg-sky-100 font-semibold text-sky-800';
+
+                let col2_Display, col3_Display;
+
+                if (isMargin) {
+                    col2_Display = `${formatNumber(value, 2)} %`;
+                    col3_Display = `(misma)`;
+                } else if (isDaily) {
+                    const dailyUsdDisplay = formatCurrency(value, 'USD', true);
+                    const dailyBtcDisplay = `${dailyGrossBtc.toFixed(6)} BTC`;
+                    col2_Display = `<div>${dailyUsdDisplay}</div><div class="text-sm font-semibold text-gray-600 mt-1">${dailyBtcDisplay}</div>`;
+
+                    const annualUsdDisplay = formatCurrency(value * 365, 'USD', true);
+                    const annualBtcDisplay = `${(dailyGrossBtc * 365).toFixed(4)} BTC`;
+                    col3_Display = `<div>${annualUsdDisplay}</div><div class="text-sm font-semibold text-gray-600 mt-1">${annualBtcDisplay}</div>`;
+                } else {
+                    col2_Display = formatCurrency(value, 'USD', true);
+                    col3_Display = formatCurrency(value * 12, 'USD', true);
+                }
+                 profitHtml += `<tr class="${rowClass}"><td class="p-2 border-b">${key}</td><td class="p-2 border-b text-right align-top">${col2_Display}</td><td class="p-2 border-b text-right align-top">${col3_Display}</td></tr>`;
+            }
+            profitTableBody.innerHTML = profitHtml;
+
+            // --- ROI & BREAK-EVEN CALCULATION ---
+            if (netProfitMonthly > 0 && totalCapex > 0) {
+                const roiMonths = totalCapex / netProfitMonthly;
+                roiValueSpan.textContent = `${formatNumber(roiMonths, 1)} Meses`;
+            } else {
+                roiValueSpan.textContent = 'Inviable o sin ganancia';
+            }
+
+            const monthlyGrossBtc = dailyGrossBtc * 30.4;
+            const fixedOpexMonthly = maintenanceMonthly + btcState.opex_fixed_monthly['Personal'] + btcState.opex_fixed_monthly['Conectividad y Otros'];
+            const totalOpexExcludingPool = electricityCostMonthly + fixedOpexMonthly;
+            const denominator = monthlyGrossBtc * (1 - btcState.pool_fee_rate);
+            
+            if (denominator > 0) {
+                const breakEvenPriceUSD = totalOpexExcludingPool / denominator;
+                breakevenPriceSpan.textContent = formatCurrency(breakEvenPriceUSD, 'USD');
+            } else {
+                breakevenPriceSpan.textContent = 'N/A';
+            }
+
+
+            // --- Energy Sale Calculation ---
+            const kwhPriceCOP = parseFloat(kwhPriceInput.value) || 0;
+
+            if (energySalePowerSpan) {
+                energySalePowerSpan.textContent = `${formatNumber(totalPowerKW, 2)} kW`;
+            }
+
+            const dailyKwh = totalPowerKW * 24;
+            const dailyIncomeCOP = dailyKwh * kwhPriceCOP;
+            const monthlyIncomeCOP = dailyIncomeCOP * 30.4;
+
+            const dailyIncomeUSD = (trmRate > 0) ? dailyIncomeCOP / trmRate : 0;
+            const monthlyIncomeUSD = (trmRate > 0) ? monthlyIncomeCOP / trmRate : 0;
+
+            if (energySaleTableBody) {
+                let energySaleHtml = '';
+                energySaleHtml += `<tr class="hover:bg-teal-50">
+                    <td class="p-3 border-b">Ingreso Bruto (COP)</td>
+                    <td class="p-3 border-b text-right">${formatCurrency(dailyIncomeCOP, 'COP')}</td>
+                    <td class="p-3 border-b text-right">${formatCurrency(monthlyIncomeCOP, 'COP')}</td>
+                </tr>`;
+                energySaleHtml += `<tr class="hover:bg-teal-50 font-semibold text-teal-900">
+                    <td class="p-3 border-b">Ingreso Bruto (USD)</td>
+                    <td class="p-3 border-b text-right">${formatCurrency(dailyIncomeUSD, 'USD')}</td>
+                    <td class="p-3 border-b text-right">${formatCurrency(monthlyIncomeUSD, 'USD')}</td>
+                </tr>`;
+                energySaleTableBody.innerHTML = energySaleHtml;
+            }
+        }
+
+        // --- INITIALIZATION ---
+        fetchAPIs();
+        setInterval(fetchAPIs, 300000); // Refresh data every 5 minutes
+        minerSlider.addEventListener('input', updateBudget);
+        kwhCostInput.addEventListener('input', updateBudget); 
+        kwhPriceInput.addEventListener('input', updateBudget);
+    });
+    </script>
+</body>
+</html>
